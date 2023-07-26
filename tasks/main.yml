@@ -1,2 +1,50 @@
 ---
 # tasks file for role_name
+
+- name: Create root group
+  group:
+    name: "root_group"
+    state: present
+
+- name: Add root user
+  user:
+    name: "{{ item.user.name }}"
+    group: "root_group"
+    shell: /bin/bash
+    state: present
+  with_items: "{{ root_users }}"
+
+- name: Allow users in root group to run sudo without password
+  copy:
+    dest: "/etc/sudoers"
+    content: |
+      %root_group	ALL=(ALL)	NOPASSWD: ALL
+
+- name: Create standard group
+  group:
+    name: "standard_group"
+    state: present
+
+- name: Add standard users
+  user:
+    name: "{{ item.user.name }}"
+    group: "standard_group"
+    shell: /bin/bash
+    state: present
+  with_items: "{{ standard_users }}"
+
+- name: Set ssh keys for root users
+  authorized_key:
+    user: "{{ item.user.name }}"
+    key: "{{ lookup('file', item.user.ssh) }}"
+    exclusive: yes
+    state: present
+  with_items: "{{ root_users }}"
+
+- name: Set ssh keys for standard users
+  authorized_key:
+    user: "{{ item.user.name }}"
+    key: "{{ lookup('file', item.user.ssh) }}"
+    exclusive: yes
+    state: present
+  with_items: "{{ standard_users }}"
