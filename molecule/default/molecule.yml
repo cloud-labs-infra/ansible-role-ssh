@@ -42,6 +42,9 @@ platforms:
 #    hostname: some-instance-02
 provisioner:
   name: ansible
+  config_options:
+    defaults:
+      remote_user: ansible
 verifier:
   name: ansible
 lint: |

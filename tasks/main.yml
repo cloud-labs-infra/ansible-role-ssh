@@ -14,7 +14,7 @@
     state: present
   with_items: "{{ root_users }}"
 
-- name: Allow root group run sudo without password
+- name: Allow root_group run sudo without password
   ansible.builtin.copy:
     dest: "/etc/sudoers"
     mode: "440"
