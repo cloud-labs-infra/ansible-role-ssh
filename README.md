@@ -33,20 +33,24 @@ Example Playbook
     - name: Manage users
       hosts: hosts
       vars:
-        root_users:
-          - user:
-              name: "root-user1"
-              ssh: "ssh_root-user1"
-          - user:
-              name: "root-user2"
-              ssh: "ssh_root-user2"
-        standard_users:
-          - user:
-              name: "standard-user1"
-              ssh: "ssh_standard-user1"
-          - user:
-              name: "standard-user2"
-              ssh: "ssh_standard-user2"
+        add_users:
+              - name: user1
+                root_hosts: [172.17.0.2]
+                std_hosts: [172.17.0.3]
+                ssh: "ssh_user1"
+              - name: user2
+                root_hosts: [172.17.0.3]
+                std_hosts: [172.17.0.2]
+                ssh: "ssh_user2"
+              - name: user3
+                root_hosts: [172.17.0.3]
+                std_hosts: []
+                ssh: "ssh_user3"
+        remove_users:
+              - name: user3
+                root_hosts: []
+                std_hosts: [172.17.0.2, 172.17.0.3]
+                ssh: "ssh_user3"
       roles:
         - { role: ansible-role-ssh}
 

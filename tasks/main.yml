@@ -1,18 +1,15 @@
 ---
 # tasks file for role_name
 
+- name: Create standard group
+  ansible.builtin.group:
+    name: "standard_group"
+    state: present
+
 - name: Create root group
   ansible.builtin.group:
     name: "root_group"
     state: present
-
-- name: Add root user
-  ansible.builtin.user:
-    name: "{{ item.user.name }}"
-    group: "root_group"
-    shell: /bin/bash
-    state: present
-  with_items: "{{ root_users }}"
 
 - name: Allow root_group run sudo without password
   ansible.builtin.copy:
@@ -21,31 +18,56 @@
     content: |
       %root_group      ALL=(ALL)       NOPASSWD: ALL
 
-- name: Create standard group
-  ansible.builtin.group:
-    name: "standard_group"
+- name: Remove root user
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    group: "root_group"
+    shell: /bin/bash
+    state: absent
+  with_items: "{{ remove_users }}"
+  when: inventory_hostname in "{{ item.root_hosts }}"
+
+- name: Remove standard users
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    group: "std_group"
+    shell: /bin/bash
+    state: absent
+  with_items: "{{ remove_users }}"
+  when: inventory_hostname in "{{ item.std_hosts }}"
+
+- name: Remove ssh keys for users
+  ansible.posix.authorized_key:
+    user: "{{ item.name }}"
+    key: "{{ lookup('file', item.ssh) }}"
+    exclusive: yes
+    state: absent
+  with_items: "{{ remove_users }}"
+  when: inventory_hostname in "{{ item.std_hosts }}" or inventory_hostname in "{{ item.root_hosts }}"
+
+- name: Add root user
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    group: "root_group"
+    shell: /bin/bash
     state: present
+  with_items: "{{ add_users }}"
+  when: inventory_hostname in "{{ item.root_hosts }}"
 
 - name: Add standard users
   ansible.builtin.user:
-    name: "{{ item.user.name }}"
+    name: "{{ item.name }}"
     group: "standard_group"
     shell: /bin/bash
     state: present
-  with_items: "{{ standard_users }}"
+  with_items: "{{ add_users }}"
+  when: inventory_hostname in "{{ item.std_hosts }}"
 
-- name: Set ssh keys for root users
+- name: Set ssh keys for users
   ansible.posix.authorized_key:
-    user: "{{ item.user.name }}"
-    key: "{{ lookup('file', item.user.ssh) }}"
+    user: "{{ item.name }}"
+    key: "{{ lookup('file', item.ssh) }}"
     exclusive: yes
     state: present
-  with_items: "{{ root_users }}"
-
-- name: Set ssh keys for standard users
-  ansible.posix.authorized_key:
-    user: "{{ item.user.name }}"
-    key: "{{ lookup('file', item.user.ssh) }}"
-    exclusive: yes
-    state: present
-  with_items: "{{ standard_users }}"
+  with_items: "{{ add_users }}"
+  when: inventory_hostname in "{{ item.std_hosts }}" or inventory_hostname in "{{ item.root_hosts }}"
