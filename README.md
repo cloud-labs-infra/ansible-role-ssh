@@ -1,31 +1,54 @@
 Role Name
 =========
 
-A brief description of the role goes here.
-
-Requirements
-------------
-
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Ansible role that manages user accounts and controls access to them with ssh keys
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+- root_users
 
-Dependencies
-------------
+    The root_users defines users with permission to run sudo without a password
+    
+    It is a list of dicts with fields:
+    
+    ```
+    name: User's name.
+    key: Path of ssh public key file.
+    ```
+- standard_users
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+    The standard_users defines users without permission to run sudo without a password
+    
+    It is a list of dicts with fields:
+    
+    ```
+    name: User's name.
+    key: Path of ssh public key file.
+    ```
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
+    - name: Manage users
+      hosts: hosts
+      vars:
+        root_users:
+          - user:
+              name: "root-user1"
+              ssh: "ssh_root-user1"
+          - user:
+              name: "root-user2"
+              ssh: "ssh_root-user2"
+        standard_users:
+          - user:
+              name: "standard-user1"
+              ssh: "ssh_standard-user1"
+          - user:
+              name: "standard-user2"
+              ssh: "ssh_standard-user2"
       roles:
-         - { role: username.rolename, x: 42 }
+        - { role: ansible-role-ssh}
 
 License
 -------
