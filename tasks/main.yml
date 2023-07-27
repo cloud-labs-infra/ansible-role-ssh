@@ -70,4 +70,4 @@
     exclusive: yes
     state: present
   with_items: "{{ add_users }}"
-  when: inventory_hostname in "{{ item.std_hosts or inventory_hostname in item.root_hosts
+  when: inventory_hostname in item.std_hosts or inventory_hostname in item.root_hosts
