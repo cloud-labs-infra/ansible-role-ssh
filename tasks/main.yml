@@ -5,11 +5,15 @@
   ansible.builtin.group:
     name: "standard_group"
     state: present
+  with_items: "{{ add_users }}"
+  when: inventory_hostname in item.std_hosts
 
 - name: Create root group
   ansible.builtin.group:
     name: "root_group"
     state: present
+  with_items: "{{ add_users }}"
+  when: inventory_hostname in item.root_hosts
 
 - name: Allow root_group run sudo without password
   ansible.builtin.copy:
@@ -17,6 +21,8 @@
     mode: "440"
     content: |
       %root_group      ALL=(ALL)       NOPASSWD: ALL
+  with_items: "{{ add_users }}"
+  when: inventory_hostname in item.root_hosts
 
 - name: Remove root user
   ansible.builtin.user:
