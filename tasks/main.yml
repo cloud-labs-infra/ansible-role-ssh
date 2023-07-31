@@ -24,32 +24,13 @@
   with_items: "{{ add_users }}"
   when: inventory_hostname in item.root_hosts
 
-- name: Remove root user
+- name: Remove root users
   ansible.builtin.user:
     name: "{{ item.name }}"
-    group: "root_group"
-    shell: /bin/bash
     state: absent
+    remove: true
   with_items: "{{ remove_users }}"
-  when: inventory_hostname in item.root_hosts
-
-- name: Remove standard users
-  ansible.builtin.user:
-    name: "{{ item.name }}"
-    group: "std_group"
-    shell: /bin/bash
-    state: absent
-  with_items: "{{ remove_users }}"
-  when: inventory_hostname in item.std_hosts
-
-- name: Remove ssh keys for users
-  ansible.posix.authorized_key:
-    user: "{{ item.name }}"
-    key: "{{ lookup('file', item.ssh) }}"
-    exclusive: yes
-    state: absent
-  with_items: "{{ remove_users }}"
-  when: inventory_hostname in item.std_hosts or inventory_hostname in item.root_hosts
+  when: inventory_hostname in item.hosts
 
 - name: Add root user
   ansible.builtin.user:
@@ -69,11 +50,20 @@
   with_items: "{{ add_users }}"
   when: inventory_hostname in item.std_hosts
 
+- name: Remove ssh keys for users
+  ansible.builtin.file:
+    path: "/home/{{item.name}}/.ssh/authorized_keys"
+    state: absent
+  with_items: "{{ add_users }}"
+  when: inventory_hostname in item.std_hosts or inventory_hostname in item.root_hosts
+
 - name: Set ssh keys for users
   ansible.posix.authorized_key:
-    user: "{{ item.name }}"
-    key: "{{ lookup('file', item.ssh) }}"
-    exclusive: yes
+    user: "{{ item.0.name }}"
+    key: "{{ lookup('file', item.1) }}"
     state: present
   with_items: "{{ add_users }}"
+  with_subelements:
+    - "{{ add_users }}"
+    - ssh
   when: inventory_hostname in item.std_hosts or inventory_hostname in item.root_hosts
