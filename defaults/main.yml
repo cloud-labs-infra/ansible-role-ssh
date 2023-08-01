@@ -1,4 +1,3 @@
 ---
 # defaults file for role_name
-add_users: []
-remove_users: []
+users: []
