@@ -1,19 +1,15 @@
 ---
 # tasks file for role_name
 
-- name: Create standard group
+- name: Create std group
   ansible.builtin.group:
-    name: "standard_group"
+    name: "std_group"
     state: present
-  with_items: "{{ add_users }}"
-  when: inventory_hostname in item.std_hosts
 
 - name: Create root group
   ansible.builtin.group:
     name: "root_group"
     state: present
-  with_items: "{{ add_users }}"
-  when: inventory_hostname in item.root_hosts
 
 - name: Allow root_group run sudo without password
   ansible.builtin.copy:
@@ -21,49 +17,36 @@
     mode: "440"
     content: |
       %root_group      ALL=(ALL)       NOPASSWD: ALL
-  with_items: "{{ add_users }}"
-  when: inventory_hostname in item.root_hosts
-
-- name: Remove root users
-  ansible.builtin.user:
-    name: "{{ item.name }}"
-    state: absent
-    remove: true
-  with_items: "{{ remove_users }}"
-  when: inventory_hostname in item.hosts
 
 - name: Add root user
   ansible.builtin.user:
     name: "{{ item.name }}"
     group: "root_group"
     shell: /bin/bash
-    state: present
+    state: "{{ item.state }}"
   with_items: "{{ add_users }}"
-  when: inventory_hostname in item.root_hosts
+  when: item.root == true
 
-- name: Add standard users
+- name: Add users
   ansible.builtin.user:
     name: "{{ item.name }}"
-    group: "standard_group"
+    group: "std_group"
     shell: /bin/bash
-    state: present
-  with_items: "{{ add_users }}"
-  when: inventory_hostname in item.std_hosts
+    state: "{{ item.state }}"
+  with_items: "{{ users }}"
+  when: item.root == true
 
 - name: Remove ssh keys for users
   ansible.builtin.file:
     path: "/home/{{item.name}}/.ssh/authorized_keys"
     state: absent
-  with_items: "{{ add_users }}"
-  when: inventory_hostname in item.std_hosts or inventory_hostname in item.root_hosts
+  with_items: "{{ users }}"
 
 - name: Set ssh keys for users
   ansible.posix.authorized_key:
     user: "{{ item.0.name }}"
     key: "{{ lookup('file', item.1) }}"
     state: present
-  with_items: "{{ add_users }}"
   with_subelements:
-    - "{{ add_users }}"
+    - "{{ users }}"
     - ssh
-  when: inventory_hostname in item.std_hosts or inventory_hostname in item.root_hosts
