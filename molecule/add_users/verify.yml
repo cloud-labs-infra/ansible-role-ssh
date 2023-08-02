@@ -1,0 +1,15 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - getent:
+        database: passwd
+    - name: Check user1 exists
+      ansible.builtin.assert:
+        that: "'user1' in ansible_facts.getent_passwd"
+    - name: Check user2 exists
+      ansible.builtin.assert:
+        that: "'user2' in ansible_facts.getent_passwd"
