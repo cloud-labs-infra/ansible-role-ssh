@@ -27,7 +27,7 @@ lint: |
   yamllint .
   ansible-lint
 scenario:
-  name: remove_user
+  name: remove_users
   test_sequence:
     - dependency
     - cleanup

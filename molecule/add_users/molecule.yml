@@ -27,7 +27,7 @@ lint: |
   yamllint .
   ansible-lint
 scenario:
-  name: add_user
+  name: add_users
   test_sequence:
     - dependency
     - cleanup
