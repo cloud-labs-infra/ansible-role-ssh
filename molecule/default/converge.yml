@@ -1,7 +1,15 @@
 ---
-- name: Converge
+- name: Add users
   hosts: all
-  tasks:
-    - name: "Include cloud_labs.ssh_user"
-      ansible.builtin.include_role:
-        name: "cloud_labs.ssh_user"
+  vars:
+    users:
+      - name: user1
+        state: present
+        root: true
+        ssh: [ "ssh_sample/ssh_user1.pub" ]
+      - name: user2
+        state: present
+        root: false
+        ssh: [ "ssh_sample/ssh_user2.pub" ]
+  roles:
+    - { role: cloud_labs.ssh_user }

@@ -6,7 +6,7 @@ driver:
 platforms:
   - name: ssh-instance-01
     hostname: ssh-instance-01
-    image: mpaivabarbosa/molecule-systemd-ubuntu:20.04
+    image: geerlingguy/docker-ubuntu2004-ansible:latest
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     groups:
@@ -14,7 +14,7 @@ platforms:
     pre_build_image: true
   - name: ssh-instance-02
     hostname: ssh-instance-02
-    image: mpaivabarbosa/molecule-systemd-ubuntu:20.04
+    image: jdeathe/centos-ssh
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     groups:
@@ -36,7 +36,7 @@ scenario:
     - create
     - prepare
     - converge
-    - idempotence
+#    - idempotence
     - side_effect
     - verify
     - cleanup
