@@ -12,4 +12,4 @@
         root: false
         ssh: [ "ssh_sample/ssh_user2.pub" ]
   roles:
-    - { role: sample.demo }
+    - { role: cloud_labs.ssh_user }

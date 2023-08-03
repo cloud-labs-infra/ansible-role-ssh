@@ -7,7 +7,7 @@
         root: true
         ssh: [ "ssh_sample/ssh_user1.pub" ]
   roles:
-    - { role: sample.demo }
+    - { role: cloud_labs.ssh_user }
 - name: Remove user
   hosts: ssh-instance-02
   vars:
@@ -17,4 +17,4 @@
         root: true
         ssh: [ "ssh_sample/ssh_user1.pub" ]
   roles:
-    - { role: sample.demo }
+    - { role: cloud_labs.ssh_user }

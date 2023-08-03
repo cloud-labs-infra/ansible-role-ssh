@@ -1,5 +1,5 @@
 galaxy_info:
-  role_name: role_name
+  role_name: ssh_user
   author: cloud_labs
   description: role_description
   company: Cloud Labs Shared Infrastructure

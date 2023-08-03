@@ -2,6 +2,6 @@
 - name: Converge
   hosts: all
   tasks:
-    - name: "Include sample.demo"
+    - name: "Include cloud_labs.ssh_user"
       include_role:
-        name: "sample.demo"
+        name: "cloud_labs.ssh_user"
