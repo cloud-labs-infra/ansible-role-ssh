@@ -1,0 +1,44 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+  - name: ssh-instance-01
+    hostname: ssh-instance-01
+    image: geerlingguy/docker-ubuntu2004-ansible:latest
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    groups:
+      - etcd
+    pre_build_image: true
+  - name: ssh-instance-02
+    hostname: ssh-instance-02
+    image: jdeathe/centos-ssh
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    groups:
+      - etcd
+    pre_build_image: true
+provisioner:
+  name: ansible
+verifier:
+  name: ansible
+lint: |
+  yamllint .
+  ansible-lint
+scenario:
+  name: update_privileges
+  test_sequence:
+    - dependency
+    - cleanup
+    - destroy
+    - syntax
+    - create
+    - prepare
+    - converge
+#    - idempotence
+    - side_effect
+    - verify
+    - cleanup
+    - destroy
