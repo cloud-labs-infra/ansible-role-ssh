@@ -24,8 +24,8 @@
     group: "root_group"
     shell: /bin/bash
     state: "{{ item.state }}"
-  with_items: "{{ add_users }}"
-  when: item.root == true
+  with_items: "{{ users }}"
+  when: item.root|ansible.builtin.bool
 
 - name: Add users
   ansible.builtin.user:
@@ -34,13 +34,14 @@
     shell: /bin/bash
     state: "{{ item.state }}"
   with_items: "{{ users }}"
-  when: item.root == true
+  when: not item.root|ansible.builtin.bool
 
 - name: Remove ssh keys for users
   ansible.builtin.file:
     path: "/home/{{item.name}}/.ssh/authorized_keys"
     state: absent
   with_items: "{{ users }}"
+  when: item.state == "present"
 
 - name: Set ssh keys for users
   ansible.posix.authorized_key:
@@ -50,3 +51,4 @@
   with_subelements:
     - "{{ users }}"
     - ssh
+  when: item.0.state == "present"

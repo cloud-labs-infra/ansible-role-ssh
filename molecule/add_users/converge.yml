@@ -1,5 +1,5 @@
 ---
-- name: Converge
+- name: Add users
   hosts: all
   vars:
     users:

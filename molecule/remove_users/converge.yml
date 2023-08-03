@@ -1,0 +1,20 @@
+- name: Add user
+  hosts: all
+  vars:
+    users:
+      - name: user1
+        state: present
+        root: true
+        ssh: [ "ssh_sample/ssh_user1.pub" ]
+  roles:
+    - { role: sample.demo }
+- name: Remove user
+  hosts: ssh-instance-02
+  vars:
+    users:
+      - name: user1
+        state: absent
+        root: true
+        ssh: [ "ssh_sample/ssh_user1.pub" ]
+  roles:
+    - { role: sample.demo }
