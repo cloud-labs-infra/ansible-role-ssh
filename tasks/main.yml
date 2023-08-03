@@ -38,7 +38,7 @@
 
 - name: Remove ssh keys for users
   ansible.builtin.file:
-    path: "/home/{{item.name}}/.ssh/authorized_keys"
+    path: "/home/{{ item.name }}/.ssh/authorized_keys"
     state: absent
   with_items: "{{ users }}"
   when: item.state == "present"

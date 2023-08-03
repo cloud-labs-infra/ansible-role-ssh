@@ -1,3 +1,4 @@
+---
 - name: Check user exists
   hosts: ssh-instance-01
   gather_facts: false

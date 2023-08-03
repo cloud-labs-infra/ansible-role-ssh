@@ -1,3 +1,4 @@
+---
 - name: Check users exist
   hosts: all
   gather_facts: false
@@ -36,7 +37,7 @@
       failed_when: False
     - name: Get file user1 info
       ansible.builtin.stat:
-          path: /etc/user1
+        path: /etc/user1
       register: stat_result1
     - name: Check that the file user1 exists
       ansible.builtin.assert:
