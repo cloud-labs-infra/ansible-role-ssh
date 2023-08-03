@@ -17,5 +17,9 @@
         state: absent
         root: true
         ssh: [ "ssh_sample/ssh_user1.pub" ]
+      - name: user2
+        state: absent
+        root: true
+        ssh: [ "ssh_sample/ssh_user2.pub" ]
   roles:
     - { role: cloud_labs.ssh_user }
