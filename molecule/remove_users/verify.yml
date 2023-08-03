@@ -2,16 +2,20 @@
   hosts: ssh-instance-01
   gather_facts: false
   tasks:
-    - getent:
+    - name: Get list of users
+      ansible.builtin.getent:
         database: passwd
-    - ansible.builtin.assert:
+    - name: Check user exists
+      ansible.builtin.assert:
         that: "'user1' in ansible_facts.getent_passwd"
 
 - name: Check user does not exist
   hosts: ssh-instance-02
   gather_facts: false
   tasks:
-    - getent:
+    - name: Get list of users
+      ansible.builtin.getent:
         database: passwd
-    - ansible.builtin.assert:
+    - name: Check user does not exist
+      ansible.builtin.assert:
         that: "'user1' not in ansible_facts.getent_passwd"

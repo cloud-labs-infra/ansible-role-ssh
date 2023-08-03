@@ -2,7 +2,8 @@
   hosts: all
   gather_facts: false
   tasks:
-    - getent:
+    - name: Get list of users
+      ansible.builtin.getent:
         database: passwd
     - name: Check user1 exists
       ansible.builtin.assert:
@@ -22,7 +23,8 @@
         path: /etc/user1
         owner: user1
         state: touch
-      ignore_errors: True
+        mode: '0750'
+      failed_when: False
     - name: user2 use root privilege
       remote_user: user2
       become: yes
@@ -30,16 +32,17 @@
         path: /etc/user2
         owner: user2
         state: touch
-      ignore_errors: True
+        mode: '0750'
+      failed_when: False
     - name: Get file user1 info
-      stat:
+      ansible.builtin.stat:
           path: /etc/user1
       register: stat_result1
     - name: Check that the file user1 exists
       ansible.builtin.assert:
         that: stat_result1.stat.exists
     - name: Get file user2 info
-      stat:
+      ansible.builtin.stat:
         path: /etc/user2
       register: stat_result2
     - name: Check that the file user2 does not exist
