@@ -2,5 +2,5 @@
   hosts: all
   gather_facts: false
   tasks:
-      ansible.builtin.assert:
-        that: true
+    ansible.builtin.assert:
+      that: true
