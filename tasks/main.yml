@@ -1,52 +1,41 @@
 ---
-# tasks file for role_name
-
-- name: Create std group
-  ansible.builtin.group:
-    name: "std_group"
-    state: present
-
 - name: Create root group
   ansible.builtin.group:
     name: "root_group"
     state: present
 
 - name: Allow root_group run sudo without password
-  ansible.builtin.copy:
+  ansible.builtin.lineinfile:
+    create: true
+    state: present
+    regex: '^%root_group'
     dest: "/etc/sudoers"
     mode: "440"
-    content: |
-      %root_group      ALL=(ALL)       NOPASSWD: ALL
+    line: '%root_group      ALL=(ALL)       NOPASSWD: ALL'
 
+# TODO: Unite next 2 tasks
 - name: Add root user
   ansible.builtin.user:
     name: "{{ item.name }}"
-    group: "root_group"
+    groups: ["root_group"]
     shell: /bin/bash
     state: "{{ item.state }}"
   loop: "{{ users }}"
-  when: item.root|ansible.builtin.bool
+  when: item.sudo | ansible.builtin.bool
 
 - name: Add users
   ansible.builtin.user:
     name: "{{ item.name }}"
-    group: "std_group"
+    groups: ''
     shell: /bin/bash
     state: "{{ item.state }}"
   loop: "{{ users }}"
-  when: not item.root|ansible.builtin.bool
-
-- name: Remove ssh keys for users
-  ansible.builtin.file:
-    path: "/home/{{ item.name }}/.ssh/authorized_keys"
-    state: absent
-  loop: "{{ users }}"
-  when: item.state == "present"
+  when: not item.sudo | ansible.builtin.bool
 
 - name: Set ssh keys for users
   ansible.posix.authorized_key:
     user: "{{ item.0.name }}"
-    key: "{{ lookup('file', item.1) }}"
-    state: present
+    key: "{{ item.1.key }}"
+    state: "{{ item.1.state | default('present')}}"
   loop: "{{ users|subelements('ssh') }}"
   when: item.0.state == "present"

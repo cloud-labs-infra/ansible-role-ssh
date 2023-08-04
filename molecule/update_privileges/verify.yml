@@ -13,7 +13,7 @@
   hosts: ssh-instance-01
   gather_facts: false
   tasks:
-    - name: user1 use root privilege
+    - name: user1 use sudo privilege
       remote_user: user1
       become: yes
       ansible.builtin.file:
@@ -33,7 +33,7 @@
   hosts: ssh-instance-02
   gather_facts: false
   tasks:
-    - name: user1 use root privilege
+    - name: user1 use sudo privilege
       remote_user: user1
       become: yes
       ansible.builtin.file:

@@ -6,18 +6,20 @@
     - name: Get list of users
       ansible.builtin.getent:
         database: passwd
+
     - name: Check user1 exists
       ansible.builtin.assert:
         that: "'user1' in ansible_facts.getent_passwd"
+
     - name: Check user2 exists
       ansible.builtin.assert:
         that: "'user2' in ansible_facts.getent_passwd"
 
-- name: Check root privilege
+- name: Check sudo privilege
   hosts: all
   gather_facts: false
   tasks:
-    - name: user1 use root privilege
+    - name: user1 use sudo privilege
       remote_user: user1
       become: yes
       ansible.builtin.file:
@@ -26,7 +28,8 @@
         state: touch
         mode: '0750'
       failed_when: False
-    - name: user2 use root privilege
+
+    - name: user2 use sudo privilege
       remote_user: user2
       become: yes
       ansible.builtin.file:
@@ -35,17 +38,21 @@
         state: touch
         mode: '0750'
       failed_when: False
+
     - name: Get file user1 info
       ansible.builtin.stat:
         path: /etc/user1
       register: stat_result1
+
     - name: Check that the file user1 exists
       ansible.builtin.assert:
         that: stat_result1.stat.exists
+
     - name: Get file user2 info
       ansible.builtin.stat:
         path: /etc/user2
       register: stat_result2
+
     - name: Check that the file user2 does not exist
       ansible.builtin.assert:
         that: not stat_result2.stat.exists
