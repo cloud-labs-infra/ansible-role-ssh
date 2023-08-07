@@ -4,7 +4,7 @@
   gather_facts: false
   tasks:
     - name: Check authorized_keys File Exists
-      stat:
+      ansible.builtin.stat:
         path: /root/.ssh/authorized_keys
       register: authorized_keys_stat
 
@@ -13,7 +13,7 @@
         that: authorized_keys_stat.stat.exists
 
     - name: Get root authorized_keys
-      shell: cat /root/.ssh/authorized_keys
+      ansible.builtin.shell: cat /root/.ssh/authorized_keys
       register: authorized_keys
 
 #    - name: Get root authorized_keys

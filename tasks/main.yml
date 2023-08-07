@@ -16,7 +16,7 @@
 - name: Add users
   ansible.builtin.user:
     name: "{{ item.name }}"
-    groups: "{{ ['root_group'] if item.sudo else ''}}"
+    groups: "{{ ['root_group'] if item.sudo else '' }}"
     shell: /bin/bash
     state: "{{ item.state }}"
   loop: "{{ users }}"
@@ -27,5 +27,5 @@
     user: "{{ item.0.name }}"
     key: "{{ item.1.key }}"
     state: "{{ item.1.state | default('present')}}"
-  loop: "{{ users|subelements('ssh') }}"
+  loop: "{{ users | subelements('ssh') }}"
   when: item.0.state == "present"

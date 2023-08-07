@@ -6,9 +6,11 @@
     - name: Get list of users
       ansible.builtin.getent:
         database: passwd
+
     - name: Check user exists
       ansible.builtin.assert:
         that: "'user1' in ansible_facts.getent_passwd"
+
 - name: Check user1 has privileges
   hosts: ssh-instance-01
   gather_facts: false
@@ -22,13 +24,16 @@
         state: touch
         mode: '0750'
       failed_when: False
+
     - name: Get file user1 info
       ansible.builtin.stat:
         path: /etc/user1
       register: stat_result1
+
     - name: Check that the file user1 exists
       ansible.builtin.assert:
         that: stat_result1.stat.exists
+
 - name: Check user1 does not have privileges
   hosts: ssh-instance-02
   gather_facts: false
@@ -42,10 +47,12 @@
         state: touch
         mode: '0750'
       failed_when: False
+
     - name: Get file user1 info
       ansible.builtin.stat:
         path: /etc/user1
       register: stat_result1
+
     - name: Check that the file user1 does not exist
       ansible.builtin.assert:
         that: not stat_result1.stat.exists
