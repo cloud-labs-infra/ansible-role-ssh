@@ -13,24 +13,14 @@
     mode: "440"
     line: '%root_group      ALL=(ALL)       NOPASSWD: ALL'
 
-# TODO: Unite next 2 tasks
-- name: Add root user
-  ansible.builtin.user:
-    name: "{{ item.name }}"
-    groups: ["root_group"]
-    shell: /bin/bash
-    state: "{{ item.state }}"
-  loop: "{{ users }}"
-  when: item.sudo | ansible.builtin.bool
-
 - name: Add users
   ansible.builtin.user:
     name: "{{ item.name }}"
-    groups: ''
+    groups: "{{ ['root_group'] if item.sudo else ''}}"
     shell: /bin/bash
     state: "{{ item.state }}"
   loop: "{{ users }}"
-  when: not item.sudo | ansible.builtin.bool
+  when: item.name != "root"
 
 - name: Set ssh keys for users
   ansible.posix.authorized_key:

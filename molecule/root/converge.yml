@@ -1,0 +1,13 @@
+---
+- name: Add users
+  hosts: all
+  vars:
+    users:
+      - name: root
+        state: present
+        sudo: true
+        ssh:
+          - key: "{{ lookup('file', '../default/ssh_sample/ssh_user1.pub') }}"
+          - key: "{{ lookup('file', '../default/ssh_sample/ssh_user2.pub') }}"
+  roles:
+    - { role: cloud_labs.ssh_user }
