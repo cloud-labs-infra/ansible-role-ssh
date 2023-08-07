@@ -10,6 +10,7 @@
           - key: "{{ lookup('file', '../default/ssh_sample/ssh_user1.pub') }}"
   roles:
     - { role: cloud_labs.ssh_user }
+
 - name: Remove user
   hosts: ssh-instance-02
   vars:
