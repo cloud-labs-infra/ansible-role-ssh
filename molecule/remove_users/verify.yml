@@ -27,10 +27,10 @@
   hosts: all
   gather_facts: false
   tasks:
-    -   name: Get list of users
-        ansible.builtin.getent:
-          database: passwd
+    - name: Get list of users
+      ansible.builtin.getent:
+        database: passwd
 
-    -   name: Check user does not exist
-        ansible.builtin.assert:
-          that: "'user2' not in ansible_facts.getent_passwd"
+    - name: Check user does not exist
+      ansible.builtin.assert:
+        that: "'user2' not in ansible_facts.getent_passwd"
