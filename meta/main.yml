@@ -1,6 +1,7 @@
 ---
 galaxy_info:
   role_name: ssh_user
+  namespace: cloud_labs
   author: cloud_labs
   description: Ansible role that manages user accounts and controls access to them with ssh keys
   company: Cloud Labs Shared Infrastructure
