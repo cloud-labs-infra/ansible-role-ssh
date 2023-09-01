@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.0.0 (2023-09-01)
+
+
+### Features
+
+* Role implementation ([#1](https://github.com/cloud-labs-infra/ansible-role-ssh/issues/1)) ([310f8cc](https://github.com/cloud-labs-infra/ansible-role-ssh/commit/310f8cc4b7bedd3c63e52f7350d327951e8f4f7a))
+
 ## 1.0.0 (2023-04-24)
 
 
