@@ -1,4 +1,4 @@
-Role Name
+ssh_user
 =========
 
 Ansible role that manages user accounts and controls access to them with ssh keys
