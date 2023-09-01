@@ -1,2 +1,31 @@
 ---
-# tasks file for role_name
+- name: Create root group
+  ansible.builtin.group:
+    name: "root_group"
+    state: present
+
+- name: Allow root_group run sudo without password
+  ansible.builtin.lineinfile:
+    create: true
+    state: present
+    regex: '^%root_group'
+    dest: "/etc/sudoers"
+    mode: "440"
+    line: '%root_group      ALL=(ALL)       NOPASSWD: ALL'
+
+- name: Add users
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    groups: "{{ ['root_group'] if item.sudo else '' }}"
+    shell: /bin/bash
+    state: "{{ item.state }}"
+  loop: "{{ users }}"
+  when: item.name != "root"
+
+- name: Set ssh keys for users
+  ansible.posix.authorized_key:
+    user: "{{ item.0.name }}"
+    key: "{{ item.1.key }}"
+    state: "{{ item.1.state | default('present')}}"
+  loop: "{{ users | subelements('ssh') }}"
+  when: item.0.state == "present"

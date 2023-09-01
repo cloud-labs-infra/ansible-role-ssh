@@ -1,0 +1,24 @@
+---
+- name: Add user
+  hosts: all
+  vars:
+    users:
+      - name: user1
+        state: present
+        sudo: true
+        ssh:
+          - key: "{{ lookup('file', '../default/ssh_sample/ssh_user1.pub') }}"
+  roles:
+    - { role: cloud_labs.ssh_user }
+
+- name: Update privileges
+  hosts: ssh-instance-02
+  vars:
+    users:
+      - name: user1
+        state: present
+        sudo: false
+        ssh:
+          - key: "{{ lookup('file', '../default/ssh_sample/ssh_user1.pub') }}"
+  roles:
+    - { role: cloud_labs.ssh_user }

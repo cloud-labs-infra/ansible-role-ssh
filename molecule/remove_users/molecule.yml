@@ -28,6 +28,7 @@ lint: |
   yamllint .
   ansible-lint
 scenario:
+  name: remove_users
   test_sequence:
     - dependency
     - cleanup
@@ -36,7 +37,8 @@ scenario:
     - create
     - prepare
     - converge
-    - idempotence
+# Test logic does not allow checking for idempotence
+#    - idempotence
     - side_effect
     - verify
     - cleanup

@@ -1,8 +1,17 @@
 ---
-- name: Converge
+- name: Add users
   hosts: all
-  gather_facts: false
-  tasks:
-    - name: "Include cloud_labs.role_name"
-      ansible.builtin.include_role:
-        name: "cloud_labs.role_name"
+  vars:
+    users:
+      - name: user1
+        state: present
+        sudo: true
+        ssh:
+          - key: "{{ lookup('file', 'ssh_sample/ssh_user1.pub') }}"
+      - name: user2
+        state: present
+        sudo: false
+        ssh:
+          - key: "{{ lookup('file', 'ssh_sample/ssh_user2.pub') }}"
+  roles:
+    - { role: cloud_labs.ssh_user }
