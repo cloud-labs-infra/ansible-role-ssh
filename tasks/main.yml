@@ -1,4 +1,5 @@
 ---
+
 - name: Create root group
   ansible.builtin.group:
     name: "root_group"
