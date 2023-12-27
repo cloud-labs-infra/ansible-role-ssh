@@ -1,4 +1,5 @@
 ---
+
 - name: Create root group
   ansible.builtin.group:
     name: "root_group"
@@ -28,4 +29,6 @@
     key: "{{ item.1.key }}"
     state: "{{ item.1.state | default('present')}}"
   loop: "{{ users | subelements('ssh') }}"
+#  # the same as previous
+#  loop: "{{ query('subelements', users, 'ssh') }}"
   when: item.0.state == "present"
